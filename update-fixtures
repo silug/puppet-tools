@@ -35,8 +35,26 @@ output = Marshal.load(Marshal.dump(input))
 
 deps = {}
 
+input.dig('fixtures', 'repositories')&.each do |key, _value|
+  fixtures_dir = File.join('.', 'spec', 'fixtures', 'modules', key)
+  unless File.directory?(fixtures_dir)
+    raise "Local directory for #{key} not found.  Run `bundle exec rake spec_prep`?"
+  end
+
+  fixture_data = JSON.load_file(File.join(fixtures_dir, 'metadata.json'))
+  slug = fixture_data['name'].sub(%r{/}, '-')
+  deps[slug] ||= []
+  available[slug] = true
+
+  fixture_data['dependencies']&.each do |dep|
+    depname = dep['name'].sub(%r{/}, '-')
+    requires[depname] = [] if requires[depname].nil?
+    requires[depname].push(slug)
+  end
+end
+
 input.dig('fixtures', 'forge_modules')&.each do |_key, value|
-  deps[value.sub(%r{/}, '-')] = []
+  deps[value.sub(%r{/}, '-')] ||= []
 end
 
 metadata['dependencies']&.each do |dep|
@@ -45,6 +63,8 @@ end
 
 until deps.empty?
   deps.each do |dep, req|
+    next if available[dep]
+
     warn "Checking #{dep}"
     warn "  => Required by #{req.join(', ')}" unless req.empty?
 
