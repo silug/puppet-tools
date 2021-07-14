@@ -1,0 +1,111 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'json'
+require 'rest-client'
+
+def forgeapi
+  'https://forgeapi.puppet.com/v3'
+end
+
+def usage
+  "Usage: #{File.basename($PROGRAM_NAME)} [--args] author-module [author-module [...]]"
+end
+
+def parse_options
+  o = {}
+
+  opts = OptionParser.new do |opt|
+    opt.banner = usage
+    opt.separator ''
+
+    {
+      'latest'    => 'Display version of the latest release',
+      'source'    => 'Display source URL',
+      'readme'    => 'Display README.md',
+      'reference' => 'Display REFERENCE.md',
+      'all'       => 'Return API results as JSON',
+    }.each do |key, value|
+      opt.on("--#{key}", value) do |_arg|
+        o[key] = true
+      end
+    end
+
+    opt.on(
+      '-h',
+      '--help',
+      'Help message',
+    ) do |_arg|
+      puts opt
+      exit 0
+    end
+  end
+
+  begin
+    opts.parse!(ARGV)
+  rescue OptionParser::ParseError => e
+    warn e
+    warn opts
+    exit 1
+  end
+
+  if ARGV.empty?
+    warn opts
+    exit 1
+  end
+
+  o['all'] = true if o.empty?
+
+  o
+end
+
+def options
+  @options ||= parse_options
+end
+
+def module_info(module_name)
+  @cached_info = {} unless defined?(@cached_info)
+
+  return @cached_info[module_name] if @cached_info.key?(module_name)
+
+  response = RestClient.get "#{forgeapi}/modules/#{module_name}"
+  info = JSON.parse response.body
+
+  unless info['superseded_by'].nil?
+    warn "  => Superseded by #{info['superseded_by']['slug']}"
+    info = module_info(info['superseded_by']['slug'])
+  end
+
+  dependencies = info['current_release']['metadata']['dependencies'].uniq
+  dependencies.each do |dep|
+    depname = dep['name'].sub(%r{/}, '-')
+    dependencies |= module_info(depname)['current_release']['metadata']['dependencies']
+  end
+  info['current_release']['metadata']['dependencies'] = dependencies
+
+  @cached_info[module_name] = info
+end
+
+if options.key?('all')
+  output = {}
+  ARGV.each do |mod|
+    output = output.merge(module_info(mod))
+  end
+
+  puts JSON.pretty_generate(output)
+  exit 0
+end
+
+ARGV.each do |mod|
+  options.each_key do |key|
+    case key
+    when 'latest'
+      puts module_info(mod)['current_release']['version'].to_s
+    when 'source'
+      puts module_info(mod)['current_release']['metadata'][key].to_s
+    else
+      puts module_info(mod)['current_release'][key].to_s
+    end
+  end
+end

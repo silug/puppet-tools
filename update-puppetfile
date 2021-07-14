@@ -1,0 +1,118 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+require 'rest-client'
+
+def forgeapi
+  'https://forgeapi.puppet.com/v3'
+end
+
+def module_info(module_name)
+  return @cached_info[module_name] unless @cached_info.nil? || @cached_info[module_name].nil?
+
+  @cached_info = {} if @cached_info.nil?
+
+  response = RestClient.get "#{forgeapi}/modules/#{module_name}"
+  info = JSON.parse response.body
+
+  unless info['superseded_by'].nil?
+    warn "  => Superseded by #{info['superseded_by']['slug']}"
+    info = module_info(info['superseded_by']['slug'])
+  end
+
+  @cached_info[module_name] = info
+end
+
+provides = {}
+requires = {}
+available = {}
+
+input = File.read('Puppetfile')
+output = []
+
+input.each_line(chomp: true) do |line|
+  r = %r{^\s*mod\s+(['"])([\w/\-]+)\1\s*,\s*(['"])([0-9.]+)\3(\s*#.*)?}.match(line)
+  unless r
+    output.push(line)
+    next
+  end
+
+  mod = r[2]
+  slug = mod.sub(%r{/}, '-')
+  ver = r[4]
+  warn "Found module #{slug} version #{ver}"
+
+  info = module_info(slug)
+  next if info.nil?
+
+  module_name = info['slug']
+  current_version = info['current_release']['version']
+
+  if available[slug]
+    warn "Duplicate definition of module #{slug}"
+    next
+  end
+
+  if module_name != slug
+    warn "  => Replaced with #{module_name} version #{current_version}" if module_name != slug
+    available[slug] = true
+  end
+
+  if available[module_name]
+    warn "Duplicate definition of module #{module_name}"
+    next
+  end
+
+  available[module_name] = true
+
+  line.sub!(%r{\b#{Regexp.escape(mod)}\b}, module_name) if module_name != slug
+
+  if current_version != ver
+    warn "  => Current version is #{current_version}"
+    line.sub!(%r{\b#{Regexp.escape(ver)}\b}, current_version)
+  end
+
+  shortname = info['name']
+  provides[shortname] = [] if provides[shortname].nil?
+  provides[shortname].push(module_name)
+
+  info['current_release']['metadata']['dependencies'].each do |dep|
+    depname = dep['name'].sub(%r{/}, '-')
+    requires[depname] = [] if requires[depname].nil?
+    requires[depname].push(module_name)
+  end
+
+  output.push(line)
+end
+
+deps = requires.filter { |k, _v| !available[k] }
+
+until deps.empty?
+  deps.each do |dep, req|
+    warn "Missing dependency #{dep} required by #{req.join(', ')}"
+    info = module_info(dep)
+    output.push("mod '#{info['slug']}', '#{info['current_release']['version']}' # Required by #{req.join(', ')}")
+
+    provides[info['name']] = [] if provides[info['name']].nil?
+    provides[info['name']].push(info['slug'])
+
+    available[info['slug']] = true
+
+    info['current_release']['metadata']['dependencies'].each do |d|
+      depname = d['name'].sub(%r{/}, '-')
+      requires[depname] = [] if requires[depname].nil?
+      requires[depname].push(info['slug'])
+    end
+  end
+
+  deps = requires.filter { |k, _v| !available[k] }
+end
+
+provides.each do |name, modules|
+  warn "Duplicate modules for '#{name}': #{modules.join(', ')}" if modules.count > 1
+end
+
+File.open('Puppetfile', 'w') do |fh|
+  fh.puts output.join("\n")
+end
