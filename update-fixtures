@@ -76,6 +76,7 @@ until deps.empty?
     output['fixtures']['forge_modules'] = {} if output['fixtures']['forge_modules'].nil?
     output['fixtures']['forge_modules'][info['name']] = info['slug']
 
+    available[dep] = true
     available[info['slug']] = true
 
     info['current_release']['metadata']['dependencies'].each do |d|
