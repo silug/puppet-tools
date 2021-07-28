@@ -97,6 +97,7 @@ until deps.empty?
     provides[info['name']] = [] if provides[info['name']].nil?
     provides[info['name']].push(info['slug'])
 
+    available[dep] = true
     available[info['slug']] = true
 
     info['current_release']['metadata']['dependencies'].each do |d|
