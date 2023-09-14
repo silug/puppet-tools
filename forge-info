@@ -98,6 +98,7 @@ if options.key?('all')
 end
 
 ARGV.each do |mod|
+  mod = mod.sub('/', '-')
   options.each_key do |key|
     case key
     when 'latest'
