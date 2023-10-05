@@ -102,11 +102,11 @@ ARGV.each do |mod|
   options.each_key do |key|
     case key
     when 'latest'
-      puts module_info(mod)['current_release']['version'].to_s
+      puts module_info(mod)['current_release']['version']
     when 'source'
-      puts module_info(mod)['current_release']['metadata'][key].to_s
+      puts module_info(mod)['current_release']['metadata'][key]
     else
-      puts module_info(mod)['current_release'][key].to_s
+      puts module_info(mod)['current_release'][key]
     end
   end
 end
