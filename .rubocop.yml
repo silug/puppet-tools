@@ -1,7 +1,6 @@
 ---
 require:
 - rubocop-performance
-- rubocop-rspec
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: '2.7'
@@ -21,17 +20,17 @@ AllCops:
 Layout/LineLength:
   Description: People have wide screens, use them.
   Max: 200
-RSpec/BeforeAfterAll:
-  Description: Beware of using after(:all) as it may cause state to leak between tests.
-    A necessary evil in acceptance testing.
-  Exclude:
-  - spec/acceptance/**/*.rb
-RSpec/HookArgument:
-  Description: Prefer explicit :each argument, matching existing module's style
-  EnforcedStyle: each
-RSpec/DescribeSymbol:
-  Exclude:
-  - spec/unit/facter/**/*.rb
+# RSpec/BeforeAfterAll:
+#   Description: Beware of using after(:all) as it may cause state to leak between tests.
+#     A necessary evil in acceptance testing.
+#   Exclude:
+#   - spec/acceptance/**/*.rb
+# RSpec/HookArgument:
+#   Description: Prefer explicit :each argument, matching existing module's style
+#   EnforcedStyle: each
+# RSpec/DescribeSymbol:
+#   Exclude:
+#   - spec/unit/facter/**/*.rb
 Style/BlockDelimiters:
   Description: Prefer braces for chaining. Mostly an aesthetical choice. Better to
     be consistent then.
@@ -71,8 +70,8 @@ Style/TrailingCommaInArrayLiteral:
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
-RSpec/MessageSpies:
-  EnforcedStyle: receive
+# RSpec/MessageSpies:
+#   EnforcedStyle: receive
 Style/Documentation:
   Exclude:
   - lib/puppet/parser/functions/**/*
@@ -285,88 +284,88 @@ Performance/UnfreezeString:
   Enabled: false
 Performance/UriDefaultParser:
   Enabled: false
-RSpec/Be:
-  Enabled: false
-RSpec/Capybara/CurrentPathExpectation:
-  Enabled: false
-RSpec/Capybara/FeatureMethods:
-  Enabled: false
-RSpec/Capybara/VisibilityMatcher:
-  Enabled: false
-RSpec/ContextMethod:
-  Enabled: false
-RSpec/ContextWording:
-  Enabled: false
-RSpec/DescribeClass:
-  Enabled: false
-RSpec/EmptyHook:
-  Enabled: false
-RSpec/EmptyLineAfterExample:
-  Enabled: false
-RSpec/EmptyLineAfterExampleGroup:
-  Enabled: false
-RSpec/EmptyLineAfterHook:
-  Enabled: false
-RSpec/ExampleLength:
-  Enabled: false
-RSpec/ExampleWithoutDescription:
-  Enabled: false
-RSpec/ExpectChange:
-  Enabled: false
-RSpec/ExpectInHook:
-  Enabled: false
-RSpec/FactoryBot/AttributeDefinedStatically:
-  Enabled: false
-RSpec/FactoryBot/CreateList:
-  Enabled: false
-RSpec/FactoryBot/FactoryClassName:
-  Enabled: false
-RSpec/HooksBeforeExamples:
-  Enabled: false
-RSpec/ImplicitBlockExpectation:
-  Enabled: false
-RSpec/ImplicitSubject:
-  Enabled: false
-RSpec/LeakyConstantDeclaration:
-  Enabled: false
-RSpec/LetBeforeExamples:
-  Enabled: false
-RSpec/MissingExampleGroupArgument:
-  Enabled: false
-RSpec/MultipleExpectations:
-  Enabled: false
-RSpec/MultipleMemoizedHelpers:
-  Enabled: false
-RSpec/MultipleSubjects:
-  Enabled: false
-RSpec/NestedGroups:
-  Enabled: false
-RSpec/PredicateMatcher:
-  Enabled: false
-RSpec/ReceiveCounts:
-  Enabled: false
-RSpec/ReceiveNever:
-  Enabled: false
-RSpec/RepeatedExampleGroupBody:
-  Enabled: false
-RSpec/RepeatedExampleGroupDescription:
-  Enabled: false
-RSpec/RepeatedIncludeExample:
-  Enabled: false
-RSpec/ReturnFromStub:
-  Enabled: false
-RSpec/SharedExamples:
-  Enabled: false
-RSpec/StubbedMock:
-  Enabled: false
-RSpec/UnspecifiedException:
-  Enabled: false
-RSpec/VariableDefinition:
-  Enabled: false
-RSpec/VoidExpect:
-  Enabled: false
-RSpec/Yield:
-  Enabled: false
+# RSpec/Be:
+#   Enabled: false
+# RSpec/Capybara/CurrentPathExpectation:
+#   Enabled: false
+# RSpec/Capybara/FeatureMethods:
+#   Enabled: false
+# RSpec/Capybara/VisibilityMatcher:
+#   Enabled: false
+# RSpec/ContextMethod:
+#   Enabled: false
+# RSpec/ContextWording:
+#   Enabled: false
+# RSpec/DescribeClass:
+#   Enabled: false
+# RSpec/EmptyHook:
+#   Enabled: false
+# RSpec/EmptyLineAfterExample:
+#   Enabled: false
+# RSpec/EmptyLineAfterExampleGroup:
+#   Enabled: false
+# RSpec/EmptyLineAfterHook:
+#   Enabled: false
+# RSpec/ExampleLength:
+#   Enabled: false
+# RSpec/ExampleWithoutDescription:
+#   Enabled: false
+# RSpec/ExpectChange:
+#   Enabled: false
+# RSpec/ExpectInHook:
+#   Enabled: false
+# RSpec/FactoryBot/AttributeDefinedStatically:
+#   Enabled: false
+# RSpec/FactoryBot/CreateList:
+#   Enabled: false
+# RSpec/FactoryBot/FactoryClassName:
+#   Enabled: false
+# RSpec/HooksBeforeExamples:
+#   Enabled: false
+# RSpec/ImplicitBlockExpectation:
+#   Enabled: false
+# RSpec/ImplicitSubject:
+#   Enabled: false
+# RSpec/LeakyConstantDeclaration:
+#   Enabled: false
+# RSpec/LetBeforeExamples:
+#   Enabled: false
+# RSpec/MissingExampleGroupArgument:
+#   Enabled: false
+# RSpec/MultipleExpectations:
+#   Enabled: false
+# RSpec/MultipleMemoizedHelpers:
+#   Enabled: false
+# RSpec/MultipleSubjects:
+#   Enabled: false
+# RSpec/NestedGroups:
+#   Enabled: false
+# RSpec/PredicateMatcher:
+#   Enabled: false
+# RSpec/ReceiveCounts:
+#   Enabled: false
+# RSpec/ReceiveNever:
+#   Enabled: false
+# RSpec/RepeatedExampleGroupBody:
+#   Enabled: false
+# RSpec/RepeatedExampleGroupDescription:
+#   Enabled: false
+# RSpec/RepeatedIncludeExample:
+#   Enabled: false
+# RSpec/ReturnFromStub:
+#   Enabled: false
+# RSpec/SharedExamples:
+#   Enabled: false
+# RSpec/StubbedMock:
+#   Enabled: false
+# RSpec/UnspecifiedException:
+#   Enabled: false
+# RSpec/VariableDefinition:
+#   Enabled: false
+# RSpec/VoidExpect:
+#   Enabled: false
+# RSpec/Yield:
+#   Enabled: false
 Security/Open:
   Enabled: false
 Style/AccessModifierDeclarations:
@@ -517,3 +516,177 @@ Style/RedundantArgument:
   Enabled: false
 Style/SwapValues:
   Enabled: false
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: true
+Gemspec/DevelopmentDependencies:
+  Enabled: true
+Gemspec/RequireMFA:
+  Enabled: true
+Layout/LineContinuationLeadingSpace:
+  Enabled: true
+Layout/LineContinuationSpacing:
+  Enabled: true
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: true
+Layout/SpaceBeforeBrackets:
+  Enabled: true
+Lint/AmbiguousAssignment:
+  Enabled: true
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: true
+Lint/AmbiguousRange:
+  Enabled: true
+Lint/ConstantOverwrittenInRescue:
+  Enabled: true
+Lint/DeprecatedConstants:
+  Enabled: true
+Lint/DuplicateMagicComment:
+  Enabled: true
+Lint/DuplicateMatchPattern:
+  Enabled: true
+Lint/EmptyInPattern:
+  Enabled: true
+Lint/IncompatibleIoSelectWithFiberScheduler:
+  Enabled: true
+Lint/LambdaWithoutLiteralBlock:
+  Enabled: true
+Lint/MixedCaseRange:
+  Enabled: true
+Lint/NonAtomicFileOperation:
+  Enabled: true
+Lint/NumberedParameterAssignment:
+  Enabled: true
+Lint/OrAssignmentToConstant:
+  Enabled: true
+Lint/RedundantDirGlobSort:
+  Enabled: true
+Lint/RedundantRegexpQuantifiers:
+  Enabled: true
+Lint/RefinementImportMethods:
+  Enabled: true
+Lint/RequireRangeParentheses:
+  Enabled: true
+Lint/RequireRelativeSelfPath:
+  Enabled: true
+Lint/SymbolConversion:
+  Enabled: true
+Lint/TripleQuotes:
+  Enabled: true
+Lint/UselessRescue:
+  Enabled: true
+Lint/UselessRuby2Keywords:
+  Enabled: true
+Metrics/CollectionLiteralLength:
+  Enabled: true
+Naming/BlockForwarding:
+  Enabled: true
+Security/CompoundHash:
+  Enabled: true
+Security/IoMethods:
+  Enabled: true
+Style/ArrayIntersect:
+  Enabled: true
+Style/ComparableClamp:
+  Enabled: true
+Style/ConcatArrayLiterals:
+  Enabled: true
+Style/DataInheritance:
+  Enabled: true
+Style/DirEmpty:
+  Enabled: true
+Style/EmptyHeredoc:
+  Enabled: true
+Style/EndlessMethod:
+  Enabled: true
+Style/EnvHome:
+  Enabled: true
+Style/ExactRegexpMatch:
+  Enabled: true
+Style/FetchEnvVar:
+  Enabled: true
+Style/FileEmpty:
+  Enabled: true
+Style/FileRead:
+  Enabled: true
+Style/FileWrite:
+  Enabled: true
+Style/HashConversion:
+  Enabled: true
+Style/HashExcept:
+  Enabled: true
+Style/IfWithBooleanLiteralBranches:
+  Enabled: true
+Style/InPatternThen:
+  Enabled: true
+Style/MagicCommentFormat:
+  Enabled: true
+Style/MapCompactWithConditionalBlock:
+  Enabled: true
+Style/MapToHash:
+  Enabled: true
+Style/MapToSet:
+  Enabled: true
+Style/MinMaxComparison:
+  Enabled: true
+Style/MultilineInPatternThen:
+  Enabled: true
+Style/NestedFileDirname:
+  Enabled: true
+Style/NumberedParameters:
+  Enabled: true
+Style/NumberedParametersLimit:
+  Enabled: true
+Style/ObjectThen:
+  Enabled: true
+Style/OpenStructUse:
+  Enabled: true
+Style/OperatorMethodCall:
+  Enabled: true
+Style/QuotedSymbols:
+  Enabled: true
+Style/RedundantArrayConstructor:
+  Enabled: true
+Style/RedundantConstantBase:
+  Enabled: true
+Style/RedundantCurrentDirectoryInPath:
+  Enabled: true
+Style/RedundantDoubleSplatHashBraces:
+  Enabled: true
+Style/RedundantEach:
+  Enabled: true
+Style/RedundantFilterChain:
+  Enabled: true
+Style/RedundantHeredocDelimiterQuotes:
+  Enabled: true
+Style/RedundantInitialize:
+  Enabled: true
+Style/RedundantLineContinuation:
+  Enabled: true
+Style/RedundantRegexpArgument:
+  Enabled: true
+Style/RedundantRegexpConstructor:
+  Enabled: true
+Style/RedundantSelfAssignmentBranch:
+  Enabled: true
+Style/RedundantStringEscape:
+  Enabled: true
+Style/ReturnNilInPredicateMethodDefinition:
+  Enabled: true
+Style/SelectByRegexp:
+  Enabled: true
+Style/StringChars:
+  Enabled: true
+Style/YAMLFileRead:
+  Enabled: true
+Performance/ConcurrentMonotonicTime:
+  Enabled: true
+Performance/MapCompact:
+  Enabled: true
+Performance/MapMethodChain:
+  Enabled: true
+Performance/RedundantEqualityComparisonBlock:
+  Enabled: true
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+Performance/StringIdentifierArgument:
+  Enabled: true

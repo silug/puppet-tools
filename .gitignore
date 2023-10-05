@@ -1,2 +1,5 @@
+*.sw?
+.sw?
+/.bundle/
 /Gemfile.lock
 /vendor/

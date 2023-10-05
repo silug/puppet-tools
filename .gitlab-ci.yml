@@ -1,0 +1,32 @@
+---
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+stages:
+  - syntax
+  - test
+
+validate:
+  stage: syntax
+  image: $RUBY_IMAGE
+  script:
+    - bundle exec rubocop
+  parallel:
+    matrix:
+      - RUBY_IMAGE: docker.io/library/ruby:2.7
+      - RUBY_IMAGE: docker.io/library/ruby:3.2
+  cache:
+    paths:
+      - vendor/bundle
+  before_script:
+    - bundle install --path vendor/bundle --jobs $(nproc)
+  tags:
+    - docker
+
+yamllint:
+  stage: syntax
+  image: "$CI_REGISTRY/computerroom/containers/yamllint:latest"
+  script:
+    - yamllint .
+  tags:
+    - docker
