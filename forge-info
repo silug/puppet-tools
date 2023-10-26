@@ -99,14 +99,19 @@ end
 
 ARGV.each do |mod|
   mod = mod.sub('/', '-')
-  options.each_key do |key|
-    case key
-    when 'latest'
-      puts module_info(mod)['current_release']['version']
-    when 'source'
-      puts module_info(mod)['current_release']['metadata'][key]
-    else
-      puts module_info(mod)['current_release'][key]
+  STDERR.printf '%s: ', mod if ARGV.length > 1
+  begin
+    options.each_key do |key|
+      case key
+      when 'latest'
+        puts module_info(mod)['current_release']['version']
+      when 'source'
+        puts module_info(mod)['current_release']['metadata'][key]
+      else
+        puts module_info(mod)['current_release'][key]
+      end
     end
+  rescue => e
+    warn e.message
   end
 end
