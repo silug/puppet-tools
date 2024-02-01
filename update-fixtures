@@ -35,7 +35,7 @@ output = Marshal.load(Marshal.dump(input))
 
 deps = {}
 
-input.dig('fixtures', 'repositories')&.each do |key, _value|
+input.dig('fixtures', 'repositories')&.each_key do |key|
   fixtures_dir = File.join('.', 'spec', 'fixtures', 'modules', key)
   unless File.directory?(fixtures_dir)
     raise "Local directory for #{key} not found.  Run `bundle exec rake spec_prep`?"
@@ -59,7 +59,7 @@ input.dig('fixtures', 'repositories')&.each do |key, _value|
   end
 end
 
-input.dig('fixtures', 'forge_modules')&.each do |_key, value|
+input.dig('fixtures', 'forge_modules')&.each_value do |value|
   deps[value.sub(%r{/}, '-')] ||= []
 end
 

@@ -690,3 +690,11 @@ Performance/RedundantSplitRegexpArgument:
   Enabled: true
 Performance/StringIdentifierArgument:
   Enabled: true
+Lint/ItWithoutArgumentsInBlock:
+  Enabled: true
+Lint/LiteralAssignmentInCondition:
+  Enabled: true
+Style/SingleLineDoEndBlock:
+  Enabled: true
+Style/SuperWithArgsParentheses:
+  Enabled: true
