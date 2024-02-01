@@ -34,7 +34,7 @@ def nextmajor(current_version)
   newver = current_version.split('.').map { |n| n.to_i }
   newver[0] += 1
   newver[1..].each_index do |n|
-    newver[n+1] = 0
+    newver[n + 1] = 0
   end
   newver.join('.')
 end
