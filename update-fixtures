@@ -41,7 +41,13 @@ input.dig('fixtures', 'repositories')&.each do |key, _value|
     raise "Local directory for #{key} not found.  Run `bundle exec rake spec_prep`?"
   end
 
-  fixture_data = JSON.load_file(File.join(fixtures_dir, 'metadata.json'))
+  fixture_metadata = File.join(fixtures_dir, 'metadata.json')
+  unless File.exist?(fixture_metadata)
+    warn "Fixture path #{fixtures_dir} does not appear to be a valid Puppet module.  Skipping."
+    next
+  end
+
+  fixture_data = JSON.load_file(fixture_metadata)
   slug = fixture_data['name'].sub(%r{/}, '-')
   deps[slug] ||= []
   available[slug] = true
