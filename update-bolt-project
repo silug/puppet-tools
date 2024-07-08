@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'yaml'
+require 'json'
+require 'rest-client'
+
+def forgeapi
+  'https://forgeapi.puppet.com/v3'
+end
+
+def module_info(module_name)
+  return @cached_info[module_name] unless @cached_info.nil? || @cached_info[module_name].nil?
+
+  @cached_info = {} if @cached_info.nil?
+
+  response = RestClient.get "#{forgeapi}/modules/#{module_name}"
+  info = JSON.parse response.body
+
+  unless info['superseded_by'].nil?
+    warn "  => Superseded by #{info['superseded_by']['slug']}"
+    info = module_info(info['superseded_by']['slug'])
+  end
+
+  @cached_info[module_name] = info
+end
+
+available = {}
+
+data = YAML.load_file('bolt-project.yaml')
+
+data['modules'].each do |mod|
+  slug = mod['name'].tr('/', '-')
+  ver = mod['version_requirement']
+  warn "Found module #{slug} version #{ver}"
+
+  info = module_info(slug)
+  next if info.nil?
+
+  module_name = info['slug']
+  current_version = info['current_release']['version']
+
+  if available[slug]
+    warn "Duplicate definition of module #{slug}"
+    next
+  end
+
+  if module_name != slug
+    warn "  => Replaced with #{module_name} version #{current_version}" if module_name != slug
+    available[slug] = true
+  end
+
+  if available[module_name]
+    warn "Duplicate definition of module #{module_name}"
+    next
+  end
+
+  available[module_name] = true
+
+  mod['name'] = module_name if module_name != slug
+
+  if current_version != ver
+    warn "  => Current version is #{current_version}"
+    mod['version_requirement'] = current_version
+  end
+end
+
+File.open('bolt-project.yaml', 'w') do |fh|
+  fh.puts data.to_yaml
+end
