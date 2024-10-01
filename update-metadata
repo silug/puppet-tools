@@ -76,7 +76,6 @@ def process_dependency(dep)
     dep['version_requirement'] = version_requirement
   else
     warn "  -> Unable to find a matching range! (Tried #{bounds}.)"
-    return
   end
 end
 
