@@ -39,19 +39,15 @@ def nextmajor(current_version)
   newver.join('.')
 end
 
-orig_metadata = JSON.parse(File.read('metadata.json'))
-
-metadata = Marshal.load(Marshal.dump(orig_metadata))
-
-metadata['dependencies'].each do |dep|
-  next unless dep.key?('name')
+def process_dependency(dep)
+  return unless dep.key?('name')
 
   warn "Checking #{dep['name']} #{dep['version_requirement']}"
 
   slug = dep['name'].tr('/', '-')
 
   info = module_info(slug)
-  next if info.nil?
+  return if info.nil?
 
   module_name = info['slug']
   current_version = info['current_release']['version']
@@ -61,15 +57,15 @@ metadata['dependencies'].each do |dep|
     dep['name'] = module_name
   end
 
-  next unless dep.key?('version_requirement')
+  return unless dep.key?('version_requirement')
 
   bounds = dep['version_requirement'].split(%r{\s+(?=[<>=~])}, 2)
-  next if Gem::Requirement.new(bounds).satisfied_by?(Gem::Version.new(current_version))
+  return if Gem::Requirement.new(bounds).satisfied_by?(Gem::Version.new(current_version))
 
   warn "  => #{module_name} #{current_version} out of range"
   unless bounds.length == 2
     warn '  -> Skipping update!'
-    next
+    return
   end
 
   # Try bumping the upper bounds
@@ -80,8 +76,20 @@ metadata['dependencies'].each do |dep|
     dep['version_requirement'] = version_requirement
   else
     warn "  -> Unable to find a matching range! (Tried #{bounds}.)"
-    next
+    return
   end
+end
+
+orig_metadata = JSON.parse(File.read('metadata.json'))
+
+metadata = Marshal.load(Marshal.dump(orig_metadata))
+
+metadata['dependencies']&.each do |dep|
+  process_dependency(dep)
+end
+
+metadata.dig('simp', 'optional_dependencies')&.each do |dep|
+  process_dependency(dep)
 end
 
 unless metadata == orig_metadata
